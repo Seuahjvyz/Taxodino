@@ -1,0 +1,876 @@
+/* ============================================
+   RESET
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* IMPORTANTE: Asegurar que html y body ocupen toda la altura */
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #F4E9D8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+    padding-top: 80px;
+    /* Eliminamos padding-bottom para que el footer se acomode naturalmente */
+}
+
+/* ============================================
+   CURSORES PERSONALIZADOS - TEMÁTICA DINOSAURIO
+   ============================================ */
+
+/* 1. CURSOR NORMAL (Default) - Huevo de dinosaurio */
+body,
+html {
+    cursor: url('/app/static/img/huevo-de-dinosaurio-mouse.png') 16 16, auto;
+}
+
+/* 2. CURSOR TEXTO (Input) - Pluma */
+input,
+textarea,
+select,
+[contenteditable="true"] {
+    cursor: url('/app/static/img/pluma-mouse.png') 8 8, text;
+}
+
+/* 3. CURSOR ENLACES Y BOTONES - Huellita */
+a,
+.nav-link,
+.link,
+button,
+.btn,
+.register-btn,
+.user-menu-trigger,
+#userMenu,
+.user-menu,
+.login-link a,
+.navbar-brand,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.user-dropdown a {
+    cursor: url('/app/static/img/huellita.png') 16 16, pointer;
+}
+
+/* 4. CURSOR CARGA (Loading/Wait) - Huevos-mouse */
+.loading,
+.waiting,
+[data-loading="true"] {
+    cursor: url('/app/static/img/huevos-mouse.gif') 16 16, wait;
+}
+
+/* 5. CURSOR NO PERMITIDO (Not allowed) - Opción con lo que tengas */
+.disabled,
+[disabled],
+.btn:disabled,
+input:disabled {
+    cursor: url('/app/static/img/huesos.png') 16 16, not-allowed;
+}
+
+/* 6. CURSOR AYUDA (Help) - Podrías usar pluma o fosil */
+.help,
+[data-help] {
+    cursor: url('/app/static/img/pluma-mouse.png') 16 16, help;
+}
+
+/* ============================================
+   NAVBAR (BARRA SUPERIOR - VERDE OSCURO)
+   ============================================ */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(45, 74, 34, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    padding: 0.8rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid #F39C12;
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Logo / Marca */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+/* Estilo para la imagen del logo en la barra superior */
+.navbar-brand img {
+    width: 40px;
+    height: auto;
+    transition: filter 0.3s ease;
+}
+
+.navbar-brand h1 {
+    font-size: 1.6rem;
+    margin: 0;
+    color: #F4E9D8;
+    text-shadow: none;
+    letter-spacing: 1px;
+}
+
+/* Enlaces de navegación */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #F4E9D8;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.nav-link i {
+    font-size: 1.1rem;
+    color: #F4E9D8;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    background: rgba(243, 156, 18, 0.2);
+    color: #F39C12;
+    transform: translateY(-2px);
+}
+
+.nav-link:hover i {
+    color: #F39C12;
+}
+
+/* Menú de usuario */
+.user-menu {
+    position: relative;
+}
+
+.user-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-menu-trigger:hover {
+    background: rgba(243, 156, 18, 0.25);
+    transform: translateY(-2px);
+    border-color: rgba(243, 156, 18, 0.5);
+}
+
+.user-menu-trigger i:first-child {
+    font-size: 1.3rem;
+    color: #F4E9D8;
+}
+
+.user-menu-trigger span {
+    color: #F4E9D8;
+    font-weight: 500;
+}
+
+.user-menu-trigger i:last-child {
+    font-size: 0.8rem;
+    color: #F4E9D8;
+}
+
+/* Dropdown del usuario - fondo más oscuro para contraste */
+.user-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: #2D4A22;
+    border-radius: 16px;
+    min-width: 200px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 101;
+    border: 1px solid #F39C12;
+}
+
+.user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #F4E9D8;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.user-dropdown a i {
+    width: 20px;
+    color: #ffffff;
+}
+
+.user-dropdown a:hover {
+    background: #3A5C2E;
+    color: #F39C12;
+}
+
+.user-dropdown a:hover i {
+    color: #F39C12;
+}
+
+.user-dropdown hr {
+    margin: 0;
+    border: none;
+    height: 1px;
+    background: #F39C12;
+    opacity: 0.3;
+}
+
+/* ============================================
+   DINOSAURIOS DE FONDO
+   ============================================ */
+@keyframes dinoFloat {
+    0% {
+        transform: translateY(-20vh) rotate(0deg) scale(0.6);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.08;
+    }
+
+    90% {
+        opacity: 0.08;
+    }
+
+    100% {
+        transform: translateY(120vh) rotate(360deg) scale(1);
+        opacity: 0;
+    }
+}
+
+.dino-bg {
+    position: fixed;
+    top: -10%;
+    pointer-events: none;
+    opacity: 0;
+    animation: dinoFloat linear infinite;
+    z-index: 0;
+}
+
+.dino-bg img {
+    width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+/* Contenedor que empuja el footer hacia abajo */
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.register-container {
+    background: white;
+    border-radius: 48px 48px 48px 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    max-width: 520px;
+    width: 100%;
+    padding: 2.5rem;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    border: 2px solid #E67E22;
+    animation: eggCrack 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+@keyframes eggCrack {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+        filter: blur(4px);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+.register-container:hover {
+    transform: scale(1.01);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.dino-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.dino-icon {
+    display: inline-block;
+    animation: dinoBounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.1));
+}
+
+.egg-logo {
+    width: 70px;
+    height: auto;
+}
+
+@keyframes dinoBounce {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(5deg);
+    }
+}
+
+h1 {
+    color: #2D4A22;
+    font-size: 2rem;
+    margin-top: 0.5rem;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0 #F39C12;
+    font-weight: 800;
+}
+
+.subtitle {
+    color: #8B5A2B;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.sub-icon {
+    width: 20px;
+    height: auto;
+    opacity: 0.7;
+}
+
+/* ============================================
+   CAMPOS DE FORMULARIO
+   ============================================ */
+.input-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #34495E;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.input-icon {
+    width: 24px;
+    height: auto;
+    filter: brightness(0.8);
+    transition: filter 0.3s ease;
+}
+
+label:hover .input-icon {
+    filter: hue-rotate(350deg) saturate();
+}
+
+input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #E8D5A3;
+    border-radius: 60px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+input:focus {
+    outline: none;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
+    transform: scale(1.02);
+}
+
+input:hover {
+    border-color: #F39C12;
+    background: #FFFBF0;
+}
+
+/* ============================================
+   REQUISITOS DE CONTRASEÑA
+   ============================================ */
+.password-requirements {
+    background: #F5D78C;
+    padding: 12px 16px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #E67E22;
+}
+
+.req-title {
+    color: #2D1B0E;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.req-title i {
+    color: #E67E22;
+    margin-right: 6px;
+}
+
+.password-requirements ul {
+    list-style: none;
+}
+
+.password-requirements li {
+    font-size: 0.75rem;
+    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.password-requirements li i {
+    font-size: 10px;
+    width: 18px;
+    text-align: center;
+}
+
+/* ESTADO VÁLIDO */
+.password-requirements li.valid {
+    color: #1B5E20;
+}
+
+.password-requirements li.valid i {
+    color: #2E7D32;
+}
+
+/* ESTADO INVÁLIDO */
+.password-requirements li.invalid {
+    color: #B71C1C;
+}
+
+.password-requirements li.invalid i {
+    color: #D32F2F;
+}
+
+/* ESTADO NEUTRAL */
+.password-requirements li.neutral {
+    color: #5D4037;
+}
+
+.password-requirements li.neutral i {
+    color: #E67E22;
+}
+
+/* Mensaje de coincidencia de contraseñas */
+.password-match-message {
+    font-size: 0.75rem;
+    margin-top: 8px;
+    margin-left: 12px;
+    font-weight: 500;
+}
+
+.match-success {
+    color: #2E7D32;
+}
+
+.match-error {
+    color: #D32F2F;
+}
+
+/* ============================================
+   BOTÓN PRINCIPAL
+   ============================================ */
+.register-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #E67E22, #F39C12);
+    border: none;
+    padding: 16px;
+    border-radius: 60px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 0 #B45F1B;
+    margin-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.register-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 0 #B45F1B;
+    animation: roar 0.2s ease-in-out 2;
+}
+
+@keyframes roar {
+
+    0%,
+    100% {
+        transform: translateY(-3px) translateX(0);
+    }
+
+    25% {
+        transform: translateY(-3px) translateX(-3px);
+    }
+
+    75% {
+        transform: translateY(-3px) translateX(3px);
+    }
+}
+
+.register-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #B45F1B;
+}
+
+.btn-icon {
+    width: 24px;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+/* ============================================
+   MENSAJE DE ÉXITO
+   ============================================ */
+.success-message {
+    background: #27AE60;
+    color: white;
+    padding: 12px;
+    border-radius: 60px;
+    text-align: center;
+    margin-top: 1rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    animation: slideUp 0.5s ease;
+}
+
+.success-message.show {
+    display: flex;
+}
+
+.success-icon {
+    width: 20px;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   ENLACES Y DECORACIONES
+   ============================================ */
+.login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #8B5A2B;
+}
+
+.login-link a {
+    color: #E67E22;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 2px dotted #E67E22;
+    transition: all 0.2s;
+}
+
+.login-link a:hover {
+    color: #F39C12;
+    border-bottom: 2px solid;
+}
+
+.footprint-decoration {
+    position: absolute;
+    bottom: -30px;
+    right: -20px;
+    display: flex;
+    gap: 5px;
+    transform: rotate(15deg);
+}
+
+.footprint-img {
+    width: 55px;
+    height: auto;
+    opacity: 0.5;
+}
+
+/* Ajustes específicos para la página de login */
+.login-container {
+    background: white;
+    border-radius: 48px 48px 48px 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    max-width: 480px;
+    width: 100%;
+    padding: 2.5rem;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    border: 2px solid #E67E22;
+    animation: eggCrack 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+.login-container:hover {
+    transform: scale(1.01);
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.forgot-password a {
+    color: #E67E22;
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: #F39C12;
+    text-decoration: underline;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #8B5A2B;
+}
+
+.register-link a {
+    color: #E67E22;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 2px dotted #E67E22;
+    transition: all 0.2s;
+}
+
+.register-link a:hover {
+    color: #F39C12;
+    border-bottom: 2px solid;
+}
+
+/* ============================================
+   FOOTER (VERDE OSCURO)
+   ============================================ */
+footer {
+    background: rgba(45, 74, 34, 0.95);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    padding: 0.8rem 2rem;
+    text-align: center;
+    border-top: 2px solid #F39C12;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    margin-top: 30px;
+    /* Quitamos position relative y margin-top auto, usamos flex de body */
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-content p {
+    color: #F4E9D8;
+    font-size: 0.8rem;
+}
+
+.footer-content a {
+    color: #F39C12;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+    color: #E67E22;
+    text-decoration: underline;
+}
+
+.footer-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-icons i {
+    color: #F4E9D8;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.footer-icons i:hover {
+    transform: translateY(-3px);
+    color: #F39C12;
+}
+
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.6rem 1rem;
+    }
+
+    .navbar-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-links {
+        gap: 0.8rem;
+    }
+
+    .nav-link {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+
+    .user-menu-trigger {
+        padding: 6px 12px;
+    }
+
+    body {
+        padding-top: 110px;
+    }
+
+    .main-content {
+        padding: 15px 0;
+    }
+
+    footer {
+        padding: 0.6rem 1rem;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 550px) {
+    .register-container {
+        padding: 1.5rem;
+        margin: 0 15px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .egg-logo {
+        width: 50px;
+    }
+
+    .password-requirements li {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .nav-link span {
+        display: none;
+    }
+
+    .nav-link i {
+        font-size: 1.3rem;
+    }
+
+    .user-menu-trigger span {
+        display: none;
+    }
+
+    body {
+        padding-top: 100px;
+    }
+}

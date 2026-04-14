@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Explorers - Inicio</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="/static/css/stylee.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <img src="/static/img/dinosaurio.png" alt="Dinosaurio">
+                <h1>Dino</h1>
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i> <span>Inicio</span>
+                </a>
+                <a href="/favoritos" class="nav-link" id="favoritosLink">
+                    <i class="fas fa-heart"></i> <span>Favoritos</span>
+                </a>
+
+                <div class="user-menu" id="userMenu">
+                    <div class="user-menu-trigger" id="userMenuTrigger">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userNameDisplay">Usuario</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="dino-bg-container"></div>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h2><i class="fas fa-volcano"></i> ¡Explora los dinosaurios! <i class="fas fa-dragon"></i></h2>
+            <p>Encuentra información fascinante sobre tus dinosaurios favoritos</p>
+        </div>
+
+        <!-- Buscador -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input"
+                    placeholder="Buscar dinosaurio por nombre, período o dieta...">
+                <button id="searchBtn" class="search-btn">
+                    <img src="/static/img/buscador.png" alt="Buscar">
+                    <span>Buscar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros rápidos -->
+        <div class="filters-section">
+            <button class="filter-btn active" data-filter="all">
+                <i class="fas fa-globe-americas"></i> Todos
+            </button>
+            <button class="filter-btn" data-filter="Carnívoro">
+                <i class="fas fa-drumstick-bite"></i> Carnívoros
+            </button>
+            <button class="filter-btn" data-filter="Herbívoro">
+                <i class="fas fa-leaf"></i> Herbívoros
+            </button>
+            <button class="filter-btn" data-filter="Omnívoro">
+                <i class="fas fa-egg"></i> Omnívoros
+            </button>
+        </div>
+
+        <!-- Contador de resultados -->
+        <div class="results-count" id="resultsCount"></div>
+
+        <!-- Grid de dinosaurios -->
+        <div id="dinosaursGrid" class="dinosaurs-grid">
+            <div class="loading-spinner">
+                <i class="fas fa-dragon"></i>
+                <p>Cargando dinosaurios...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de detalles -->
+    <!-- Modal de detalles -->
+    <div id="dinoModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <img id="modalImage" class="modal-image" src="" alt="">
+            <div class="modal-body">
+                <h2 id="modalName"></h2>
+                <h3 id="modalScientific"></h3>
+                <div class="modal-details" id="modalDetails"></div>
+                <div class="modal-description" id="modalDescription"></div>
+                <div class="modal-sources" id="modalSources"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2026 Dino Explorers - Todos los derechos reservados</p>
+            <div class="footer-icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-tiktok"></i>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/menu-usuario.js"></script>
+    <script src="/static/js/dinosaurio.js"></script>
+</body>
+
+</html>

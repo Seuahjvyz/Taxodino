@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Explorers - Iniciar Sesión</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <img src="../static/img/dinosaurio.png" alt="Dinosaurio">
+                <h1>Dino</h1>
+            </a>
+            
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> <span>Inicio</span>
+                </a>
+                <a href="favoritos.html" class="nav-link" id="favoritosLink">
+                    <i class="fas fa-heart"></i> <span>Favoritos</span>
+                </a>
+                
+                <div class="user-menu" id="userMenu">
+                    <div class="user-menu-trigger" id="userMenuTrigger">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userNameDisplay">Usuario</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="dino-bg-container"></div>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="login-container">
+            <div class="dino-header">
+                <div class="dino-icon">
+                    <img src="../static/img/huevo.png" alt="Huevo dinosaurio" class="egg-logo">
+                </div>
+                <h1>Dino Explorers</h1>
+                <div class="subtitle">
+                    <img src="../static/img/fosil.png" alt="Fósil" class="sub-icon">
+                    <span>Inicia tu aventura</span>
+                    <img src="../static/img/fosil.png" alt="Fósil" class="sub-icon">
+                </div>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>
+                        <img src="../static/img/dinosaurio-user.png" alt="Usuario" class="input-icon">
+                        <span>Nombre de usuario o email</span>
+                    </label>
+                    <input type="text" id="username" placeholder="Anchornis o tu@dinoexplorer.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <img src="../static/img/craneo-de-dinosaurio (1).png" alt="Contraseña" class="input-icon">
+                        <span>Contraseña</span>
+                    </label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#"><i class="fas fa-question-circle"></i> ¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="register-btn">
+                    <img src="../static/img/dinosaurio (2).png" alt="Dinosaurio" class="btn-icon">
+                    <span>Iniciar Sesión</span>
+                    <img src="../static/img/dinosaurio (2).png" alt="Dinosaurio" class="btn-icon">
+                </button>
+
+                <div class="success-message" id="successMessage">
+                    <img src="../static/img/huella.png" alt="Huella" class="success-icon">
+                    <span>¡Inicio de sesión exitoso! Redirigiendo...</span>
+                </div>
+
+                <div class="register-link">
+                    ¿No tienes una cuenta fósil? <a href="registro.html">Regístrate aquí</a>
+                </div>
+            </form>
+            
+            <div class="footprint-decoration">
+                <img src="../static/img/huella2.png" alt="Huella" class="footprint-img">
+                <img src="../static/img/huella2.png" alt="Huella" class="footprint-img">
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2026 Dino Explorers - Todos los derechos reservados</p>
+            <div class="footer-icons">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-tiktok"></i>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../static/js/login.js"></script>
+    <script src="../static/js/menu-usuario.js"></script>
+</body>
+</html>
