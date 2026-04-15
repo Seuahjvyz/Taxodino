@@ -1,36 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taxodino</title>
-    
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <!-- Estilos -->
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Iconos -->
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Taxodino" />
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest" />
 </head>
+
 <body>
 
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="navbar-brand">
-                <img src="../static/img/dinosaurio.png" alt="Dinosaurio">
-                <h1>Dino</h1>
+            <a href="/" class="navbar-brand">
+                <img src="/static/img/dilophosaurus.png" alt="Dinosaurio">
+                <h1>Taxodino</h1>
             </a>
-            
+
             <div class="nav-links">
-                <a href="index.html" class="nav-link">
+                <a href="/" class="nav-link">
                     <i class="fas fa-home"></i> <span>Inicio</span>
                 </a>
-                <a href="favoritos.html" class="nav-link" id="favoritosLink">
+                <a href="/favoritos" class="nav-link" id="favoritosLink">
                     <i class="fas fa-heart"></i> <span>Favoritos</span>
                 </a>
-                
+
                 <div class="user-menu" id="userMenu">
                     <div class="user-menu-trigger" id="userMenuTrigger">
                         <i class="fas fa-user-circle"></i>
@@ -42,7 +53,7 @@
             </div>
         </div>
     </nav>
-    
+
     <div id="dino-bg-container"></div>
 
     <!-- Contenido principal -->
@@ -50,20 +61,20 @@
         <div class="register-container">
             <div class="dino-header">
                 <div class="dino-icon">
-                    <img src="../static/img/huevo.png" alt="Huevo dinosaurio" class="egg-logo">
+                    <img src="/static/img/huevo.png" alt="Huevo dinosaurio" class="egg-logo">
                 </div>
                 <h1>Dino Explorers</h1>
                 <div class="subtitle">
-                    <img src="../static/img/fosil.png" alt="Fósil" class="sub-icon">
+                    <img src="/static/img/fosil.png" alt="Fósil" class="sub-icon">
                     <span>Únete a la manada</span>
-                    <img src="../static/img/fosil.png" alt="Fósil" class="sub-icon">
+                    <img src="/static/img/fosil.png" alt="Fósil" class="sub-icon">
                 </div>
             </div>
 
             <form id="registroForm">
                 <div class="input-group">
                     <label>
-                        <img src="../static/img/dinosaurio-user.png" alt="Dinosaurio" class="input-icon">
+                        <img src="/static/img/dinosaurio-user.png" alt="Dinosaurio" class="input-icon">
                         <span>Nombre completo</span>
                     </label>
                     <input type="text" id="name" placeholder="Zaid Rebollo" required>
@@ -71,7 +82,7 @@
 
                 <div class="input-group">
                     <label>
-                        <img src="../static/img/dilofosaurio.png" alt="Dilofosaurio" class="input-icon">
+                        <img src="/static/img/dilofosaurio.png" alt="Dilofosaurio" class="input-icon">
                         <span>Nombre de usuario</span>
                     </label>
                     <input type="text" id="username" placeholder="Anchornis" required>
@@ -79,7 +90,7 @@
 
                 <div class="input-group">
                     <label>
-                        <img src="../static/img/fosil-correo.png" alt="Fosil" class="input-icon">
+                        <img src="/static/img/fosil-correo.png" alt="Fosil" class="input-icon">
                         <span>Correo electrónico</span>
                     </label>
                     <input type="email" id="email" placeholder="tu@dinoexplorer.com" required>
@@ -87,7 +98,7 @@
 
                 <div class="input-group">
                     <label>
-                        <img src="../static/img/craneo-de-dinosaurio (1).png" alt="Cráneo" class="input-icon">
+                        <img src="/static/img/craneo-de-dinosaurio (1).png" alt="Cráneo" class="input-icon">
                         <span>Contraseña</span>
                     </label>
                     <input type="password" id="password" placeholder="••••••••" required>
@@ -107,7 +118,7 @@
 
                 <div class="input-group">
                     <label>
-                        <img src="../static/img/craneo-de-dinosaurio (1).png" alt="Craneo" class="input-icon">
+                        <img src="/static/img/craneo-de-dinosaurio (1).png" alt="Craneo" class="input-icon">
                         <span>Confirmar contraseña</span>
                     </label>
                     <input type="password" id="confirmPassword" placeholder="••••••••" required>
@@ -115,24 +126,24 @@
                 </div>
 
                 <button type="submit" class="register-btn">
-                    <img src="../static/img/dinosaurio (2).png" alt="Dinosaurio" class="btn-icon">
+                    <img src="/static/img/dinosaurio (2).png" alt="Dinosaurio" class="btn-icon">
                     <span>Registrar</span>
-                    <img src="../static/img/dinosaurio (2).png" alt="Dinosaurio" class="btn-icon">
+                    <img src="/static/img/dinosaurio (2).png" alt="Dinosaurio" class="btn-icon">
                 </button>
 
                 <div class="success-message" id="successMessage">
-                    <img src="../static/img/huella.png" alt="Huella" class="success-icon">
+                    <img src="/static/img/huella.png" alt="Huella" class="success-icon">
                     <span>¡Registro exitoso! Bienvenido a la manada</span>
                 </div>
 
                 <div class="login-link">
-                    ¿Ya tienes una cuenta fósil? <a href="login.html">Ingresa aquí</a>
+                    ¿Ya tienes una cuenta fósil? <a href="/login">Ingresa aquí</a>
                 </div>
             </form>
-            
+
             <div class="footprint-decoration">
-                <img src="../static/img/huella2.png" alt="Huella" class="footprint-img">
-                <img src="../static/img/huella2.png" alt="Huella" class="footprint-img">
+                <img src="/static/img/huella2.png" alt="Huella" class="footprint-img">
+                <img src="/static/img/huella2.png" alt="Huella" class="footprint-img">
             </div>
         </div>
     </main>
@@ -148,8 +159,9 @@
             </div>
         </div>
     </footer>
-    
+
     <script src="../static/js/registro.js"></script>
     <script src="../static/js/menu-usuario.js"></script>
 </body>
+
 </html>

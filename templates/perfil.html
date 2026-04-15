@@ -4,17 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dino Explorers - Mi Perfil</title>
+    <title>Taxodino</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Estilos -->
-    <link rel="stylesheet" href="/static/css/stylee.css">
+    <link rel="stylesheet" href="../static/css/stylee.css">
+
+    <!-- Iconos -->
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Taxodino" />
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest" />
     <style>
         .profile-container {
             background: white;
@@ -91,18 +99,18 @@
 
 <body>
 
-    <nav class="navbar">
+<nav class="navbar">
         <div class="navbar-container">
             <a href="/" class="navbar-brand">
-                <img src="/static/img/dinosaurio.png" alt="Dinosaurio">
-                <h1>Dino</h1>
+                <img src="/static/img/dilophosaurus.png" alt="Dinosaurio">
+                <h1>Taxodino</h1>
             </a>
 
             <div class="nav-links">
                 <a href="/" class="nav-link">
                     <i class="fas fa-home"></i> <span>Inicio</span>
                 </a>
-                <a href="/favoritos" class="nav-link">
+                <a href="/favoritos" class="nav-link" id="favoritosLink">
                     <i class="fas fa-heart"></i> <span>Favoritos</span>
                 </a>
 

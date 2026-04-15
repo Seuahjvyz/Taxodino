@@ -5,48 +5,87 @@ class WikidataService:
     
     @staticmethod
     async def buscar_dinosaurio(nombre: str) -> Optional[Dict[str, Any]]:
-        """Busca un dinosaurio en Wikidata"""
+        """Busca un dinosaurio en Wikidata con múltiples estrategias"""
         
-        # Lista de nombres de dinosaurios conocidos para búsqueda
-        nombres_busqueda = [
-            nombre,
-            nombre.capitalize(),
-            nombre.title(),
-            f"{nombre} rex" if "rex" not in nombre.lower() else nombre,
-            nombre.replace(" ", "_")
-        ]
+        nombre_limpio = nombre.strip()
         
-        for search_name in nombres_busqueda[:3]:
-            sparql_query = f"""
+        # Estrategia 1: Búsqueda directa por nombre
+        query_directa = f"""
+        SELECT ?item ?itemLabel ?scientificName ?weight ?length WHERE {{
+          ?item wdt:P31 wd:Q430;
+                 rdfs:label ?itemLabel.
+          ?item wdt:P225 ?scientificName.
+          OPTIONAL {{ ?item wdt:P2067 ?weight. }}
+          OPTIONAL {{ ?item wdt:P2043 ?length. }}
+          FILTER(LCASE(?itemLabel) = LCASE("{nombre_limpio}"))
+          SERVICE wikibase:label {{ bd:serviceParam wikibase:language "es,en". }}
+        }}
+        LIMIT 1
+        """
+        
+        result = await WikidataService._ejecutar_query(query_directa)
+        if result:
+            print(f"✅ Wikidata: encontrado por nombre exacto: {nombre_limpio}")
+            return result
+        
+        # Estrategia 2: Búsqueda por coincidencia parcial
+        query_parcial = f"""
+        SELECT ?item ?itemLabel ?scientificName ?weight ?length WHERE {{
+          ?item wdt:P31 wd:Q430;
+                 rdfs:label ?itemLabel.
+          ?item wdt:P225 ?scientificName.
+          OPTIONAL {{ ?item wdt:P2067 ?weight. }}
+          OPTIONAL {{ ?item wdt:P2043 ?length. }}
+          FILTER(CONTAINS(LCASE(?itemLabel), LCASE("{nombre_limpio}")))
+          SERVICE wikibase:label {{ bd:serviceParam wikibase:language "es,en". }}
+        }}
+        LIMIT 1
+        """
+        
+        result = await WikidataService._ejecutar_query(query_parcial)
+        if result:
+            print(f"✅ Wikidata: encontrado por coincidencia parcial: {nombre_limpio}")
+            return result
+        
+        # Estrategia 3: Si tiene dos palabras, buscar por nombre científico
+        if " " in nombre_limpio:
+            query_cientifico = f"""
             SELECT ?item ?itemLabel ?scientificName ?weight ?length WHERE {{
               ?item wdt:P31 wd:Q430;
-                     rdfs:label ?itemLabel.
-              ?item wdt:P225 ?scientificName.
+                    wdt:P225 ?scientificName.
+              FILTER(CONTAINS(LCASE(?scientificName), LCASE("{nombre_limpio}")))
               OPTIONAL {{ ?item wdt:P2067 ?weight. }}
               OPTIONAL {{ ?item wdt:P2043 ?length. }}
-              FILTER(CONTAINS(LCASE(?itemLabel), LCASE("{search_name}")))
-              SERVICE wikibase:label {{ bd:serviceParam wikibase:language "es". }}
+              SERVICE wikibase:label {{ bd:serviceParam wikibase:language "es,en". }}
             }}
             LIMIT 1
             """
-            
-            async with httpx.AsyncClient() as client:
-                try:
-                    response = await client.get(
-                        "https://query.wikidata.org/sparql",
-                        params={"format": "json", "query": sparql_query},
-                        timeout=30.0
-                    )
-                    if response.status_code == 200:
-                        data = response.json()
-                        results = data.get("results", {}).get("bindings", [])
-                        if results:
-                            print(f"✅ Encontrado en Wikidata: {search_name}")
-                            return WikidataService._parse_result(results[0])
-                except Exception as e:
-                    print(f"Error en Wikidata: {e}")
+            result = await WikidataService._ejecutar_query(query_cientifico)
+            if result:
+                print(f"✅ Wikidata: encontrado por nombre científico: {nombre_limpio}")
+                return result
         
-        print(f"⚠️ No encontrado en Wikidata: {nombre}")
+        print(f"⚠️ Wikidata: no encontrado: {nombre_limpio}")
+        return None
+    
+    @staticmethod
+    async def _ejecutar_query(query: str) -> Optional[Dict[str, Any]]:
+        """Ejecuta una consulta SPARQL y parsea el resultado"""
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.get(
+                    "https://query.wikidata.org/sparql",
+                    params={"format": "json", "query": query},
+                    timeout=30.0,
+                    headers={"User-Agent": "Taxodino/1.0 (https://taxodino.com)"}
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    results = data.get("results", {}).get("bindings", [])
+                    if results:
+                        return WikidataService._parse_result(results[0])
+            except Exception as e:
+                print(f"❌ Error en Wikidata: {e}")
         return None
     
     @staticmethod
