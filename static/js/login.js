@@ -6,15 +6,15 @@ function createDinoBackground() {
     if (!container) return;
     
     const dinoImages = [
-        '../static/img/dinosauriof1.png',
-        '../static/img/dinosauriof2.png',
-        '../static/img/dinosauriof3.png',
-        '../static/img/dinosauriof4.png',
-        '../static/img/dinosauriof5.png',
-        '../static/img/dinosauriof6.png',
-        '../static/img/dinosauriof7.png',
-        '../static/img/dinosauriof8.png',
-        '../static/img/dinosauriof9.png'
+        '/static/img/dinosauriof1.png',
+        '/static/img/dinosauriof2.png',
+        '/static/img/dinosauriof3.png',
+        '/static/img/dinosauriof4.png',
+        '/static/img/dinosauriof5.png',
+        '/static/img/dinosauriof6.png',
+        '/static/img/dinosauriof7.png',
+        '/static/img/dinosauriof8.png',
+        '/static/img/dinosauriof9.png'
     ];
     
     for (let i = 0; i < 18; i++) {
@@ -25,6 +25,9 @@ function createDinoBackground() {
         const randomIndex = Math.floor(Math.random() * dinoImages.length);
         img.src = dinoImages[randomIndex];
         img.alt = 'Dinosaurio fondo';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
         
         dinoDiv.appendChild(img);
         
@@ -34,36 +37,13 @@ function createDinoBackground() {
         dinoDiv.style.animationDelay = Math.random() * 15 + 's';
         const size = 40 + Math.random() * 60;
         dinoDiv.style.width = size + 'px';
+        dinoDiv.style.height = 'auto';
         
         container.appendChild(dinoDiv);
     }
 }
 
-// ============================================
-// USUARIOS DE DEMOSTRACIÓN (simulando base de datos)
-// ============================================
-const demoUsers = [
-    { username: "Anchornis", email: "anchornis@dino.com", password: "Dino123!" },
-    { username: "Zaid", email: "zaid@dino.com", password: "Dino123!" },
-    { username: "demo", email: "demo@dino.com", password: "Dino123!" }
-];
-
-// ============================================
-// VALIDAR CREDENCIALES
-// ============================================
-function validateCredentials(identifier, password) {
-    // Buscar por username o email
-    return demoUsers.find(user => 
-        (user.username === identifier || user.email === identifier) && 
-        user.password === password
-    );
-}
-
-// ============================================
-// MOSTRAR MENSAJE DE ERROR
-// ============================================
 function showError(message) {
-    // Crear elemento de error si no existe
     let errorDiv = document.getElementById('loginError');
     if (!errorDiv) {
         errorDiv = document.createElement('div');
@@ -79,44 +59,60 @@ function showError(message) {
             align-items: center;
             justify-content: center;
             gap: 10px;
-            animation: slideUp 0.5s ease;
         `;
         const form = document.getElementById('loginForm');
-        form.appendChild(errorDiv);
+        if (form) form.appendChild(errorDiv);
     }
     
-    errorDiv.innerHTML = `
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>${message}</span>
-    `;
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i><span>${message}</span>`;
     errorDiv.style.display = 'flex';
     
-    // Ocultar después de 3 segundos
     setTimeout(() => {
-        errorDiv.style.display = 'none';
+        if (errorDiv) errorDiv.style.display = 'none';
     }, 3000);
 }
 
+function mostrarExito(mensaje) {
+    const successDiv = document.getElementById('successMessage');
+    if (successDiv) {
+        successDiv.innerHTML = `
+            <img src="/static/img/huella.png" alt="Huella" class="success-icon">
+            <span>${mensaje}</span>
+        `;
+        successDiv.classList.add('show');
+        successDiv.style.display = 'block';
+        
+        const container = document.querySelector('.login-container');
+        if (container) {
+            container.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                container.style.transform = '';
+            }, 200);
+        }
+    }
+}
+
 // ============================================
-// INICIALIZAR EVENTOS
+// INICIALIZACIÓN
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-    // Crear dinosaurios flotantes
     createDinoBackground();
     
     const form = document.getElementById('loginForm');
-    const successDiv = document.getElementById('successMessage');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     
-    // Submit del formulario
-    form.addEventListener('submit', function(e) {
+    if (!form) {
+        console.error('Formulario de login no encontrado');
+        return;
+    }
+    
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const identifier = usernameInput.value.trim();
         const password = passwordInput.value;
         
-        // Validar campos vacíos
         if (identifier === '') {
             showError("❌ Ingresa tu nombre de usuario o email");
             usernameInput.focus();
@@ -129,43 +125,54 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Validar credenciales
-        const user = validateCredentials(identifier, password);
-        
-        if (!user) {
-            showError("❌ Usuario o contraseña incorrectos. ¿Probaste con demo@dino.com / Dino123!?");
-            passwordInput.value = '';
-            passwordInput.focus();
-            return;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn ? submitBtn.innerHTML : 'Iniciar Sesión';
+        if (submitBtn) {
+            submitBtn.innerHTML = '<span>⏳ Validando...</span>';
+            submitBtn.disabled = true;
         }
         
-        // ============================================
-        // INICIO DE SESIÓN EXITOSO
-        // ============================================
-        
-        // Guardar usuario en localStorage
-        localStorage.setItem('currentUser', JSON.stringify({
-            username: user.username,
-            email: user.email
-        }));
-        
-        // Mostrar mensaje de éxito
-        successDiv.classList.add('show');
-        
-        // Animación de "romper huevo"
-        const container = document.querySelector('.login-container');
-        container.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-            container.style.transform = '';
-        }, 200);
-        
-        // Redirigir después de 2 segundos
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 2000);
+        try {
+            const response = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: identifier, password: password })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                localStorage.setItem('currentUser', JSON.stringify({
+                    id: data.id,
+                    nombre: data.nombre,
+                    username: data.username,
+                    email: data.email
+                }));
+                
+                mostrarExito("✅ ¡Inicio de sesión exitoso! Redirigiendo...");
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                showError(data.detail || "❌ Usuario o contraseña incorrectos");
+                passwordInput.value = '';
+                passwordInput.focus();
+                if (submitBtn) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError("❌ Error de conexión con el servidor");
+            if (submitBtn) {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
     });
     
-    // Limpiar mensaje de error al escribir
     usernameInput.addEventListener('input', () => {
         const errorDiv = document.getElementById('loginError');
         if (errorDiv) errorDiv.style.display = 'none';

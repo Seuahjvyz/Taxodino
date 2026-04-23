@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
-import asyncio
-
+from typing import List, Optional, Dict, Any
 from app.core.database import get_db
-from app.models import Dinosaurio, Imagen, WikidataInfo, RegistroFosil, Curiosidad
-from app.services.dinosaurio_service import DinosaurioService
+from app.models.dinosaurio import Dinosaurio
+from app.schemas.dinosaurio import DinosaurioResponse, DinosaurioCreate
+from app.services.paleodb_service import PaleoDBService
 
 router = APIRouter()
+
+# Servicios
+paleo_service = PaleoDBService()
 
 @router.get("/")
 async def get_all_dinosaurs(
@@ -15,126 +17,145 @@ async def get_all_dinosaurs(
     limit: int = 100,
     db: Session = Depends(get_db)
 ):
-    """Obtiene todos los dinosaurios paginados"""
-    
-    dinosaurios = db.query(Dinosaurio).offset(skip).limit(limit).all()
-    
-    return {
-        "total": db.query(Dinosaurio).count(),
-        "data": [
-            {
-                "id": d.id,
-                "nombre": d.nombre_comun,
-                "nombre_cientifico": d.nombre_cientifico,
-                "dieta": d.dieta,
-                "periodo": d.periodo,
-                "imagen_url": d.imagen_url or f"https://placehold.co/600x400/2D4A22/white?text={d.nombre_comun.replace(' ', '+')}",
-                "descripcion": d.descripcion_general or f"Información sobre {d.nombre_comun}"
-            }
-            for d in dinosaurios
-        ]
-    }
-
-@router.get("/search")
-async def search_dinosaurs(
-    query: str = Query(..., min_length=1, description="Nombre del dinosaurio a buscar"),
-    db: Session = Depends(get_db)
-):
-    """Busca dinosaurios por nombre común o científico"""
-    
-    # 1. Buscar en BD local
-    resultados = db.query(Dinosaurio).filter(
-        (Dinosaurio.nombre_comun.ilike(f"%{query}%")) |
-        (Dinosaurio.nombre_cientifico.ilike(f"%{query}%"))
-    ).all()
-    
-    if resultados:
+    """Obtener todos los dinosaurios (formato para frontend)"""
+    try:
+        dinosaurios = db.query(Dinosaurio).offset(skip).limit(limit).all()
+        total = db.query(Dinosaurio).count()
+        
+        # Formato que espera el frontend
         return {
-            "source": "database",
-            "count": len(resultados),
             "data": [
                 {
                     "id": d.id,
-                    "nombre": d.nombre_comun,
+                    "nombre": d.nombre,
                     "nombre_cientifico": d.nombre_cientifico,
-                    "dieta": d.dieta,
                     "periodo": d.periodo,
-                    "imagen_url": d.imagen_url or f"https://placehold.co/600x400/2D4A22/white?text={d.nombre_comun.replace(' ', '+')}",
-                    "descripcion": d.descripcion_general
+                    "dieta": d.dieta,
+                    "descripcion": d.descripcion,
+                    "imagen_url": d.imagen_url,
+                    "longitud_metros": d.longitud,
+                    "peso_kg": d.peso
                 }
-                for d in resultados
-            ]
+                for d in dinosaurios
+            ],
+            "total": total,
+            "message": "Success"
         }
-    
-    # 2. Si no está en BD, buscar en APIs externas (solo para nombres válidos)
-    # Lista de palabras que no son dinosaurios reales
-    palabras_invalidas = ["carnivoro", "herbivoro", "omnivoro", "carnívoro", "herbívoro", "omnívoro", "dinosaurio", "dinosaur"]
-    
-    if query.lower() in palabras_invalidas:
+    except Exception as e:
+        print(f"Error en get_all_dinosaurs: {e}")
         return {
-            "source": "none",
-            "count": 0,
             "data": [],
-            "message": f"'{query}' es un tipo de dieta, no un dinosaurio específico. Busca nombres como 'Tiranosaurio Rex' o 'Velociraptor'."
+            "total": 0,
+            "message": f"Error: {str(e)}"
         }
-    
-    # Buscar en APIs externas
-    service = DinosaurioService(db)
-    result = await service.buscar_o_crear(query)
-    
-    return result
 
-@router.get("/{dino_id}")
-async def get_dinosaur_by_id(
-    dino_id: int,
+@router.get("/{dinosaurio_id}")
+async def get_dinosaur(
+    dinosaurio_id: int,
     db: Session = Depends(get_db)
 ):
-    """Obtiene un dinosaurio por su ID con toda la información"""
-    
-    dino = db.query(Dinosaurio).filter(Dinosaurio.id == dino_id).first()
-    
-    if not dino:
-        raise HTTPException(status_code=404, detail="Dinosaurio no encontrado")
-    
-    # Obtener información relacionada
-    imagenes = db.query(Imagen).filter(Imagen.dinosaurio_id == dino_id).all()
-    wikidata_info = db.query(WikidataInfo).filter(WikidataInfo.dinosaurio_id == dino_id).first()
-    registros_fosiles = db.query(RegistroFosil).filter(RegistroFosil.dinosaurio_id == dino_id).all()
-    curiosidades = db.query(Curiosidad).filter(Curiosidad.dinosaurio_id == dino_id).all()
-    
-    return {
-        "id": dino.id,
-        "nombre": dino.nombre_comun,
-        "nombre_cientifico": dino.nombre_cientifico,
-        "dieta": dino.dieta,
-        "periodo": dino.periodo,
-        "longitud_metros": dino.longitud_metros,
-        "peso_kg": dino.peso_kg,
-        "altura_metros": dino.altura_metros,
-        "descripcion": dino.descripcion_general,
-        "imagen_url": dino.imagen_url,
-        "imagenes": [
-            {
-                "url": img.url_imagen,
-                "miniatura": img.url_miniatura,
-                "principal": img.es_principal
-            } for img in imagenes
-        ] if imagenes else [],
-        "wikidata": {
-            "descubridor": wikidata_info.descubridor if wikidata_info else None,
-            "año_descubrimiento": wikidata_info.año_descubrimiento if wikidata_info else None,
-            "habitat": wikidata_info.habitat if wikidata_info else None
-        } if wikidata_info else None,
-        "registros_fosiles": [
-            {
-                "ubicacion": r.ubicacion,
-                "edad_geologica": r.edad_geologica,
-                "formacion_rocosa": r.formacion_rocosa
-            } for r in registros_fosiles
-        ] if registros_fosiles else [],
-        "curiosidades": [c.texto_curiosidad for c in curiosidades] if curiosidades else [
-            f"¡El {dino.nombre_comun} es un dinosaurio fascinante!",
-            f"Vivió durante el período {dino.periodo or 'desconocido'}.",
-            f"Era un dinosaurio {dino.dieta or 'desconocido'}."
-        ]
-    }
+    """Obtener un dinosaurio por ID (formato para frontend)"""
+    try:
+        dinosaurio = db.query(Dinosaurio).filter(Dinosaurio.id == dinosaurio_id).first()
+        if not dinosaurio:
+            raise HTTPException(status_code=404, detail="Dinosaurio no encontrado")
+        
+        # Formato que espera el frontend
+        return {
+            "id": dinosaurio.id,
+            "nombre": dinosaurio.nombre,
+            "nombre_cientifico": dinosaurio.nombre_cientifico,
+            "periodo": dinosaurio.periodo,
+            "dieta": dinosaurio.dieta,
+            "descripcion": dinosaurio.descripcion,
+            "imagen_url": dinosaurio.imagen_url,
+            "longitud_metros": dinosaurio.longitud,
+            "peso_kg": dinosaurio.peso,
+            "curiosidades": []
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error en get_dinosaur: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/search/")
+async def search_dinosaurs(
+    query: str,
+    db: Session = Depends(get_db)
+):
+    """Buscar dinosaurios por nombre (formato para frontend)"""
+    try:
+        # Buscar en base de datos local - CORREGIDO: usar 'nombre' en lugar de 'nombre_comun'
+        dinosaurios = db.query(Dinosaurio).filter(
+            (Dinosaurio.nombre.ilike(f"%{query}%")) |
+            (Dinosaurio.nombre_cientifico.ilike(f"%{query}%"))
+        ).all()
+        
+        if dinosaurios:
+            return {
+                "data": [
+                    {
+                        "id": d.id,
+                        "nombre": d.nombre,
+                        "nombre_cientifico": d.nombre_cientifico,
+                        "periodo": d.periodo,
+                        "dieta": d.dieta,
+                        "descripcion": d.descripcion,
+                        "imagen_url": d.imagen_url,
+                        "longitud_metros": d.longitud,
+                        "peso_kg": d.peso
+                    }
+                    for d in dinosaurios
+                ],
+                "total": len(dinosaurios),
+                "message": f"Encontrados {len(dinosaurios)} dinosaurios"
+            }
+        
+        # Si no hay en local, buscar en PaleoDB
+        fosiles = await paleo_service.buscar_fosiles(query)
+        
+        return {
+            "data": fosiles,
+            "total": len(fosiles),
+            "message": f"Búsqueda en PaleoDB: {len(fosiles)} resultados"
+        }
+        
+    except Exception as e:
+        print(f"Error en search_dinosaurs: {e}")
+        return {
+            "data": [],
+            "total": 0,
+            "message": f"Error: {str(e)}"
+        }
+
+@router.post("/")
+async def create_dinosaur(
+    nombre: str,
+    nombre_cientifico: str = None,
+    periodo: str = None,
+    dieta: str = None,
+    descripcion: str = None,
+    db: Session = Depends(get_db)
+):
+    """Crear un nuevo dinosaurio"""
+    try:
+        nuevo_dino = Dinosaurio(
+            nombre=nombre,
+            nombre_cientifico=nombre_cientifico,
+            periodo=periodo,
+            dieta=dieta,
+            descripcion=descripcion
+        )
+        db.add(nuevo_dino)
+        db.commit()
+        db.refresh(nuevo_dino)
+        
+        return {
+            "id": nuevo_dino.id,
+            "nombre": nuevo_dino.nombre,
+            "message": "Dinosaurio creado exitosamente"
+        }
+    except Exception as e:
+        print(f"Error en create_dinosaur: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

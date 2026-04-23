@@ -116,9 +116,15 @@ async function buscarDinosaurios(query) {
     grid.innerHTML = '<div class="loading-spinner"><i class="fas fa-dragon fa-spin"></i><p>Buscando dinosaurios...</p></div>';
     
     try {
-        const response = await fetch(`${API_BASE_URL}/dinosaurs/search?query=${encodeURIComponent(query)}`);
+        // CORREGIDO: usar query como parámetro correctamente
+        const url = `${API_BASE_URL}/dinosaurs/search/?query=${encodeURIComponent(query.trim())}`;
+        console.log('Buscando en URL:', url);
+        
+        const response = await fetch(url);
         
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
@@ -132,12 +138,13 @@ async function buscarDinosaurios(query) {
                     <i class="fas fa-search"></i>
                     <h3>No se encontraron resultados</h3>
                     <p>${mensaje}</p>
+                    <p style="margin-top: 1rem;">Sugerencias: "Rex", "Raptor", "Triceratops"</p>
                 </div>
             `;
             return;
         }
         
-        const resultados = Array.isArray(data.data) ? data.data : [data.data];
+        const resultados = data.data;
         renderDinosaurios(resultados);
         
         const resultsCount = document.getElementById('resultsCount');
@@ -152,6 +159,7 @@ async function buscarDinosaurios(query) {
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Error en la búsqueda</h3>
                 <p>Intenta nuevamente</p>
+                <button onclick="cargarDinosaurios()" style="margin-top: 1rem; padding: 8px 20px; background: #E67E22; color: white; border: none; border-radius: 20px; cursor: pointer;">Volver a cargar</button>
             </div>
         `;
     }

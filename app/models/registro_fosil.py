@@ -1,15 +1,18 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 class RegistroFosil(Base):
     __tablename__ = "registros_fosiles"
     
     id = Column(Integer, primary_key=True, index=True)
-    dinosaurio_id = Column(Integer, ForeignKey("dinosaurs.id", ondelete="CASCADE"))
-    ubicacion = Column(String(200))
-    coordenadas_lat = Column(Float)
-    coordenadas_lng = Column(Float)
-    edad_geologica = Column(String(100))
-    formacion_rocosa = Column(String(150))
-    museo_codigo = Column(String(100))
-    fecha_descubrimiento = Column(Integer)
+    dinosaurio_id = Column(Integer, ForeignKey("dinosaurios.id"), nullable=True)  # Hacer nullable por ahora
+    pais = Column(String(100), index=True)
+    latitud = Column(Float, nullable=True)
+    longitud = Column(Float, nullable=True)
+    formacion = Column(String(200), nullable=True)
+    edad_ma = Column(String(50), nullable=True)
+    descripcion = Column(Text, nullable=True)
+    
+    # Relación (comentada temporalmente)
+    # dinosaurio = relationship("Dinosaurio", back_populates="registros_fosiles")

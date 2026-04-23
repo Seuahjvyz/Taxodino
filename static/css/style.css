@@ -31,7 +31,7 @@ body {
 /* 1. CURSOR NORMAL (Default) - Huevo de dinosaurio */
 body,
 html {
-    cursor: url('/app/static/img/huevo-de-dinosaurio-mouse.png') 16 16, auto;
+    cursor: url('/static/img/huevo-de-dinosaurio-mouse.png') 16 16, auto;
 }
 
 /* 2. CURSOR TEXTO (Input) - Pluma */
@@ -39,7 +39,7 @@ input,
 textarea,
 select,
 [contenteditable="true"] {
-    cursor: url('/app/static/img/pluma-mouse.png') 8 8, text;
+    cursor: url('/static/img/pluma-mouse.png') 8 8, text;
 }
 
 /* 3. CURSOR ENLACES Y BOTONES - Huellita */
@@ -58,14 +58,14 @@ button,
 input[type="submit"],
 input[type="button"],
 .user-dropdown a {
-    cursor: url('/app/static/img/huellita.png') 16 16, pointer;
+    cursor: url('/static/img/huellita.png') 16 16, pointer;
 }
 
 /* 4. CURSOR CARGA (Loading/Wait) - Huevos-mouse */
 .loading,
 .waiting,
 [data-loading="true"] {
-    cursor: url('/app/static/img/huevos-mouse.gif') 16 16, wait;
+    cursor: url('/static/img/huevos-mouse.gif') 16 16, wait;
 }
 
 /* 5. CURSOR NO PERMITIDO (Not allowed) - Opción con lo que tengas */
@@ -73,13 +73,13 @@ input[type="button"],
 [disabled],
 .btn:disabled,
 input:disabled {
-    cursor: url('/app/static/img/huesos.png') 16 16, not-allowed;
+    cursor: url('/static/img/huesos.png') 16 16, not-allowed;
 }
 
 /* 6. CURSOR AYUDA (Help) - Podrías usar pluma o fosil */
 .help,
 [data-help] {
-    cursor: url('/app/static/img/pluma-mouse.png') 16 16, help;
+    cursor: url('/static/img/pluma-mouse.png') 16 16, help;
 }
 
 /* ============================================

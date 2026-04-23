@@ -1,10 +1,16 @@
 // ============================================
-// DINOSAURIOS FLOTANTES DE FONDO
+// DINOSAURIOS FLOTANTES DE FONDO (imágenes f1 a f9)
 // ============================================
 function createDinoBackground() {
     const container = document.getElementById('dino-bg-container');
-    if (!container) return;
+    
+    // Verificar si el contenedor existe
+    if (!container) {
+        console.log('Contenedor dino-bg-container no encontrado');
+        return;
+    }
 
+    // Tus 9 imágenes de dinosaurios
     const dinoImages = [
         '/static/img/dinosauriof1.png',
         '/static/img/dinosauriof2.png',
@@ -20,6 +26,7 @@ function createDinoBackground() {
     for (let i = 0; i < 18; i++) {
         const dinoDiv = document.createElement('div');
         dinoDiv.className = 'dino-bg';
+
         const img = document.createElement('img');
         const randomIndex = Math.floor(Math.random() * dinoImages.length);
         img.src = dinoImages[randomIndex];
@@ -27,7 +34,9 @@ function createDinoBackground() {
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.objectFit = 'contain';
+
         dinoDiv.appendChild(img);
+
         dinoDiv.style.left = Math.random() * 100 + '%';
         const duration = 15 + Math.random() * 20;
         dinoDiv.style.animationDuration = duration + 's';
@@ -35,12 +44,13 @@ function createDinoBackground() {
         const size = 40 + Math.random() * 60;
         dinoDiv.style.width = size + 'px';
         dinoDiv.style.height = 'auto';
+
         container.appendChild(dinoDiv);
     }
 }
 
 // ============================================
-// VALIDACIÓN DE CONTRASEÑA
+// VALIDACIÓN DE CONTRASEÑA FUERTE
 // ============================================
 function checkPasswordStrength(password) {
     const requirements = {
@@ -51,14 +61,17 @@ function checkPasswordStrength(password) {
         longitud: password.length >= 8
     };
 
+    // Actualizar colores de la lista
     const reqMayuscula = document.getElementById('req-mayuscula');
     const reqMinuscula = document.getElementById('req-minuscula');
     const reqNumero = document.getElementById('req-numero');
     const reqEspecial = document.getElementById('req-especial');
     const reqLongitud = document.getElementById('req-longitud');
 
+    // Función para actualizar cada requisito
     function updateRequirement(element, isValid) {
         if (!element) return;
+        
         if (isValid) {
             element.classList.add('valid');
             element.classList.remove('invalid', 'neutral');
@@ -84,11 +97,15 @@ function checkPasswordStrength(password) {
     updateRequirement(reqLongitud, requirements.longitud);
 
     return requirements.mayuscula && requirements.minuscula &&
-           requirements.numero && requirements.especial && requirements.longitud;
+        requirements.numero && requirements.especial && requirements.longitud;
 }
 
+// ============================================
+// VALIDAR COINCIDENCIA DE CONTRASEÑAS
+// ============================================
 function checkPasswordsMatch(password, confirmPassword) {
     const matchMessage = document.getElementById('matchMessage');
+
     if (!matchMessage) return false;
 
     if (confirmPassword === '') {
@@ -108,10 +125,28 @@ function checkPasswordsMatch(password, confirmPassword) {
     }
 }
 
+// ============================================
+// FUNCIONES DE MENSAJES
+// ============================================
 function mostrarError(mensaje) {
+    // Crear toast de error
     const toast = document.createElement('div');
     toast.textContent = mensaje;
-    toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#e74c3c;color:white;padding:12px 24px;border-radius:8px;z-index:1000;font-size:14px;animation:slideIn 0.3s ease;box-shadow:0 2px 10px rgba(0,0,0,0.2);max-width:350px;white-space:pre-line;';
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #e74c3c;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        z-index: 1000;
+        font-size: 14px;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        max-width: 350px;
+        white-space: pre-line;
+    `;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 4000);
 }
@@ -121,8 +156,8 @@ function mostrarExito(mensaje) {
     if (successDiv) {
         successDiv.textContent = mensaje;
         successDiv.classList.add('show');
-        successDiv.style.display = 'block';
         
+        // Animación de "romper huevo"
         const container = document.querySelector('.register-container');
         if (container) {
             container.style.transform = 'scale(0.98)';
@@ -133,27 +168,47 @@ function mostrarExito(mensaje) {
         
         setTimeout(() => {
             successDiv.classList.remove('show');
-            successDiv.style.display = 'none';
-            window.location.href = '/login';
-        }, 2000);
+        }, 4000);
+    } else {
+        // Crear toast de éxito
+        const toast = document.createElement('div');
+        toast.textContent = mensaje;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
 }
 
 // ============================================
-// INICIALIZACIÓN
+// INICIALIZAR EVENTOS
 // ============================================
 document.addEventListener('DOMContentLoaded', function () {
+    // Verificar que todos los elementos existan
     const form = document.getElementById('registroForm');
     const passwordInput = document.getElementById('password');
     const confirmInput = document.getElementById('confirmPassword');
+    const successDiv = document.getElementById('successMessage');
 
     if (!form) {
         console.error('Formulario de registro no encontrado');
         return;
     }
 
+    // Crear fondo de dinosaurios
     createDinoBackground();
 
+    // Inicializar requisitos en estado neutral
     const allReqs = document.querySelectorAll('.password-requirements li');
     if (allReqs.length > 0) {
         allReqs.forEach(req => {
@@ -164,104 +219,113 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Evento para validar contraseña en tiempo real
     if (passwordInput) {
         passwordInput.addEventListener('input', function () {
             const password = this.value;
             checkPasswordStrength(password);
+
             if (confirmInput && confirmInput.value !== '') {
                 checkPasswordsMatch(password, confirmInput.value);
             }
         });
     }
 
+    // Evento para validar coincidencia en tiempo real
     if (confirmInput) {
         confirmInput.addEventListener('input', function () {
             if (passwordInput) {
-                checkPasswordsMatch(passwordInput.value, this.value);
+                const password = passwordInput.value;
+                const confirmPassword = this.value;
+                checkPasswordsMatch(password, confirmPassword);
             }
         });
     }
 
+    // Submit del formulario
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
+
         const nombre = document.getElementById('nombre')?.value.trim() || '';
         const username = document.getElementById('username')?.value.trim() || '';
         const email = document.getElementById('email')?.value.trim() || '';
         const password = passwordInput?.value || '';
         const confirmPassword = confirmInput?.value || '';
 
-        if (nombre.length < 5) {
-            mostrarError("El nombre debe tener al menos 2 letras.");
+        // Validar nombre
+        if (nombre.length < 2) {
+            mostrarError("❌ El nombre debe tener al menos 2 letras.");
             document.getElementById('nombre')?.focus();
             return;
         }
 
         if (username.length < 3) {
-            mostrarError("El nombre de usuario debe tener al menos 3 caracteres.");
+            mostrarError("❌ El nombre de usuario debe tener al menos 3 caracteres.");
             document.getElementById('username')?.focus();
             return;
         }
 
+        // Validar email
         if (!email.includes('@') || !email.includes('.')) {
-            mostrarError("Correo electrónico no válido.");
+            mostrarError("❌ Correo electrónico no válido.");
             document.getElementById('email')?.focus();
             return;
         }
 
+        // Validar contraseña fuerte
         const isPasswordStrong = checkPasswordStrength(password);
         if (!isPasswordStrong) {
-            mostrarError("La contraseña no cumple con los requisitos.");
+            mostrarError("❌ La contraseña no cumple con todos los requisitos.\n\nRequisitos:\n- 1 mayúscula\n- 1 minúscula\n- 1 número\n- 1 carácter especial\n- Mínimo 8 caracteres");
             passwordInput?.focus();
             return;
         }
 
+        // Validar que coincidan las contraseñas
         if (password !== confirmPassword) {
-            mostrarError("Las contraseñas no coinciden.");
+            mostrarError("❌ Las contraseñas no coinciden.");
             confirmInput?.focus();
             return;
         }
 
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn ? submitBtn.textContent : 'Registrar';
-        if (submitBtn) {
-            submitBtn.textContent = 'Registrando...';
-            submitBtn.disabled = true;
-        }
-
-        try {
-            const response = await fetch('/api/v1/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, username, email, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                mostrarExito("Registro exitoso! Redirigiendo al login...");
-                form.reset();
-            } else {
-                mostrarError(data.detail || data.message || "Error en el registro");
-                if (submitBtn) {
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                }
+        // Mostrar mensaje de éxito
+        mostrarExito("✅ ¡Registro exitoso! Bienvenido a Taxodino 🦕");
+        
+        // Limpiar formulario después del éxito
+        setTimeout(() => {
+            form.reset();
+            
+            // Resetear validaciones visuales
+            if (allReqs.length > 0) {
+                allReqs.forEach(req => {
+                    req.classList.add('neutral');
+                    req.classList.remove('valid', 'invalid');
+                    const icon = req.querySelector('i');
+                    if (icon) icon.className = 'fas fa-circle';
+                });
             }
-        } catch (error) {
-            console.error('Error:', error);
-            mostrarError("Error de conexión con el servidor");
-            if (submitBtn) {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
-        }
+            
+            const matchMessage = document.getElementById('matchMessage');
+            if (matchMessage) matchMessage.innerHTML = '';
+            
+        }, 4000);
     });
 });
 
+// Agregar animación CSS si no existe
 if (!document.querySelector('#dino-animation-style')) {
     const style = document.createElement('style');
     style.id = 'dino-animation-style';
-    style.textContent = '@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    `;
     document.head.appendChild(style);
 }

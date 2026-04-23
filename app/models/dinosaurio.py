@@ -1,19 +1,20 @@
-from sqlalchemy import Column, Integer, String, Float, Text, DateTime
-from sqlalchemy.sql import func
+from sqlalchemy import Column, Integer, String, Text, Float
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 class Dinosaurio(Base):
-    __tablename__ = "dinosaurs"
+    __tablename__ = "dinosaurios"
     
     id = Column(Integer, primary_key=True, index=True)
-    nombre_comun = Column(String(100), nullable=False)
-    nombre_cientifico = Column(String(150), unique=True, nullable=False)
-    dieta = Column(String(50))
-    periodo = Column(String(50))
-    longitud_metros = Column(Float)
-    peso_kg = Column(Float)
-    altura_metros = Column(Float)
-    descripcion_general = Column(Text)
-    imagen_url = Column(Text)
-    created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    nombre = Column(String(100), nullable=False, index=True)
+    nombre_cientifico = Column(String(200), nullable=True)
+    periodo = Column(String(50), nullable=True)
+    dieta = Column(String(50), nullable=True)
+    descripcion = Column(Text, nullable=True)
+    imagen_url = Column(String(500), nullable=True)
+    altura = Column(Float, nullable=True)
+    peso = Column(Float, nullable=True)
+    longitud = Column(Float, nullable=True)
+    
+    # Relación con registros fósiles (comentada temporalmente)
+    # registros_fosiles = relationship("RegistroFosil", back_populates="dinosaurio")

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: taxodino-app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NEON_DATABASE_URL=${NEON_DATABASE_URL}
+      - FREEPIK_API_KEY=${FREEPIK_API_KEY}
+      - WIKIDATA_USER_AGENT=${WIKIDATA_USER_AGENT}
+    volumes:
+      - ./:/app
+      - /app/__pycache__
+    env_file:
+      - .env
+    restart: unless-stopped
