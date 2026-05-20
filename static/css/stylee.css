@@ -257,6 +257,155 @@ input:disabled {
     color: #F39C12;
 }
 
+.world-section {
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(45, 74, 34, 0.96), rgba(22, 52, 74, 0.96));
+    border: 2px solid rgba(243, 156, 18, 0.45);
+    border-radius: 28px;
+    color: #F4E9D8;
+    box-shadow: 0 18px 40px rgba(20, 28, 22, 0.22);
+}
+
+.world-section-copy {
+    margin-bottom: 1rem;
+}
+
+.world-kicker {
+    display: inline-block;
+    margin-bottom: 0.65rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(243, 156, 18, 0.18);
+    color: #FFD27D;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.world-section-copy h3 {
+    font-size: clamp(1.6rem, 2vw, 2.25rem);
+    margin-bottom: 0.6rem;
+}
+
+.world-section-copy p,
+.map-country-status,
+.map-dino-item p,
+.map-dinosaur-list p {
+    color: rgba(244, 233, 216, 0.9);
+}
+
+.world-tools {
+    display: grid;
+    grid-template-columns: auto minmax(220px, 320px) 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.world-tools label,
+.world-results-header h4 {
+    font-weight: 700;
+}
+
+.country-select {
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(243, 156, 18, 0.35);
+    border-radius: 14px;
+    background: rgba(244, 233, 216, 0.98);
+    color: #243724;
+    font-size: 1rem;
+}
+
+.world-map {
+    height: 420px;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.world-results {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.world-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.map-source-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFF0CB;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.map-dinosaur-list {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.map-dino-item {
+    padding: 0.9rem 1rem;
+    border-left: 4px solid #F39C12;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.map-dino-item h5 {
+    margin-bottom: 0.35rem;
+    font-size: 1rem;
+}
+
+.map-dino-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.45rem 0 0.6rem;
+}
+
+.map-dino-meta span,
+.location-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(244, 233, 216, 0.14);
+    font-size: 0.84rem;
+}
+
+.location-summary {
+    margin-top: 0.75rem;
+}
+
+.location-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.location-chip {
+    color: #2D4A22;
+    background: #F7D38A;
+    font-weight: 600;
+}
+
 .user-dropdown hr {
     margin: 0;
     border: none;
@@ -859,6 +1008,24 @@ footer {
 
     .main-content {
         padding: 15px;
+    }
+
+    .world-section {
+        padding: 1rem;
+        border-radius: 22px;
+    }
+
+    .world-tools {
+        grid-template-columns: 1fr;
+    }
+
+    .world-map {
+        height: 340px;
+    }
+
+    .world-results-header {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     footer {

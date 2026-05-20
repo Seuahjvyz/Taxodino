@@ -107,14 +107,14 @@
         // Cargar lista de países
         async function cargarPaises() {
             try {
-                const response = await fetch('/api/v1/geografia/paises');
+                const response = await fetch('/api/v1/geografia/paises-detalle');
                 const paises = await response.json();
                 
                 const select = document.getElementById('pais');
                 paises.forEach(pais => {
                     const option = document.createElement('option');
-                    option.value = pais.toLowerCase();
-                    option.textContent = pais;
+                    option.value = pais.clave;
+                    option.textContent = pais.nombre;
                     select.appendChild(option);
                 });
             } catch (error) {

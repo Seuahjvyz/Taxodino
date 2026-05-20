@@ -13,16 +13,21 @@ class DinosaurGeographyService:
         """
         Obtiene dinosaurios por país desde PaleoDB
         """
-        country_lower = country_name.lower()
+        country_lower = settings.normalize_country_key(country_name)
+        country_label = settings.get_country_label(country_name) or country_name.capitalize()
         
         # Obtener código ISO del país
         codigo_pais = settings.PAISES_API.get(country_lower)
         
         if not codigo_pais:
             return {
-                "pais": country_name.capitalize(),
+                "pais": country_label,
+                "coordenadas": settings.PAISES_COORDENADAS.get(country_lower, {
+                    "lat": 0, "lng": 0, "continente": "Desconocido"
+                }),
                 "dinosaurios": [],
-                "error": f"País '{country_name}' no soportado",
+                "fuente": "Sin datos",
+                "mensaje": f"No hay una fuente geográfica configurada para {country_label}.",
                 "total": 0
             }
         
@@ -63,7 +68,7 @@ class DinosaurGeographyService:
                     })
                     
                     return {
-                        "pais": country_name.capitalize(),
+                        "pais": country_label,
                         "coordenadas": coordenadas,
                         "dinosaurios": dinosaurios,
                         "fuente": "Paleobiology Database",
@@ -71,20 +76,27 @@ class DinosaurGeographyService:
                     }
                 else:
                     return {
-                        "pais": country_name.capitalize(),
+                        "pais": country_label,
+                        "coordenadas": settings.PAISES_COORDENADAS.get(country_lower, {
+                            "lat": 0, "lng": 0, "continente": "Desconocido"
+                        }),
                         "dinosaurios": [],
                         "fuente": "Error en la API",
+                        "mensaje": f"No se pudieron consultar registros externos para {country_label}.",
                         "total": 0
                     }
                     
             except Exception as e:
                 logger.error(f"Error en PaleoDB: {e}")
                 return {
-                    "pais": country_name.capitalize(),
+                    "pais": country_label,
+                    "coordenadas": settings.PAISES_COORDENADAS.get(country_lower, {
+                        "lat": 0, "lng": 0, "continente": "Desconocido"
+                    }),
                     "dinosaurios": [],
                     "fuente": "Error de conexión",
                     "total": 0,
-                    "error": str(e)
+                    "mensaje": f"No fue posible consultar la fuente externa para {country_label}."
                 }
     
     def _guess_diet(self, nombre: str) -> str:

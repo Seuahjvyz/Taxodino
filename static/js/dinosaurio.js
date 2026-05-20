@@ -3,6 +3,9 @@
 // ============================================
 
 const API_BASE_URL = 'http://localhost:8000/api/v1';
+let worldMap = null;
+let worldMapMarkers = [];
+let selectedCountryMarker = null;
 
 // ============================================
 // INICIALIZACIÓN
@@ -10,6 +13,7 @@ const API_BASE_URL = 'http://localhost:8000/api/v1';
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Dino Explorers iniciado');
+    initWorldMap();
     cargarDinosaurios();
     
     // Configurar búsqueda
@@ -102,6 +106,145 @@ async function cargarDinosaurios() {
             </div>
         `;
     }
+}
+
+async function initWorldMap() {
+    const mapElement = document.getElementById('worldMap');
+    const select = document.getElementById('countrySelect');
+
+    if (!mapElement || !select || typeof L === 'undefined') {
+        return;
+    }
+
+    worldMap = L.map('worldMap', {
+        zoomControl: true,
+        scrollWheelZoom: false
+    }).setView([18, 10], 2);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; CartoDB',
+        subdomains: 'abcd',
+        maxZoom: 18
+    }).addTo(worldMap);
+
+    select.addEventListener('change', (event) => {
+        if (event.target.value) {
+            cargarDinosauriosPorPais(event.target.value);
+        }
+    });
+
+    await cargarPaisesMapa();
+}
+
+async function cargarPaisesMapa() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/geografia/paises-detalle`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const paises = await response.json();
+        const select = document.getElementById('countrySelect');
+        if (!select) return;
+
+        paises.forEach((pais) => {
+            const option = document.createElement('option');
+            option.value = pais.clave;
+            option.textContent = pais.nombre;
+            select.appendChild(option);
+
+            const marker = L.circleMarker([pais.coordenadas.lat, pais.coordenadas.lng], {
+                radius: 6,
+                color: '#F39C12',
+                weight: 2,
+                fillColor: '#FFD27D',
+                fillOpacity: 0.8
+            }).addTo(worldMap);
+
+            marker.bindPopup(`<strong>${escapeHtml(pais.nombre)}</strong><br>Haz clic para explorar registros.`);
+            marker.on('click', () => {
+                select.value = pais.clave;
+                cargarDinosauriosPorPais(pais.clave);
+            });
+            worldMapMarkers.push(marker);
+        });
+    } catch (error) {
+        console.error('Error cargando países del mapa:', error);
+        const status = document.getElementById('mapCountryStatus');
+        if (status) {
+            status.textContent = 'No se pudieron cargar los países del mapa.';
+        }
+    }
+}
+
+async function cargarDinosauriosPorPais(pais) {
+    const list = document.getElementById('mapDinosaurList');
+    const status = document.getElementById('mapCountryStatus');
+    const badge = document.getElementById('mapSourceBadge');
+
+    if (!pais || !list) return;
+
+    list.innerHTML = '<p>Cargando dinosaurios de esta región...</p>';
+    if (status) {
+        status.textContent = 'Consultando registros fósiles y referencias conocidas.';
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/geografia/dinosaurios/${encodeURIComponent(pais)}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderMapDinosaurios(data);
+        actualizarMapaSeleccionado(data);
+
+        if (status) {
+            status.textContent = `${data.pais}: ${data.total} dinosaurio(s) localizado(s).`;
+        }
+        if (badge) {
+            badge.textContent = data.fuente || 'Sin fuente';
+        }
+    } catch (error) {
+        console.error('Error cargando dinosaurios por país:', error);
+        list.innerHTML = '<p>No fue posible cargar los dinosaurios de esta región.</p>';
+        if (badge) {
+            badge.textContent = 'Error';
+        }
+    }
+}
+
+function actualizarMapaSeleccionado(data) {
+    if (!worldMap || !data || !data.coordenadas) return;
+
+    if (selectedCountryMarker) {
+        worldMap.removeLayer(selectedCountryMarker);
+    }
+
+    selectedCountryMarker = L.marker([data.coordenadas.lat, data.coordenadas.lng]).addTo(worldMap);
+    selectedCountryMarker.bindPopup(`<strong>${escapeHtml(data.pais)}</strong><br>${data.total} dinosaurio(s)`).openPopup();
+    worldMap.setView([data.coordenadas.lat, data.coordenadas.lng], 4);
+}
+
+function renderMapDinosaurios(data) {
+    const list = document.getElementById('mapDinosaurList');
+    if (!list) return;
+
+    if (!data.dinosaurios || data.dinosaurios.length === 0) {
+        list.innerHTML = `<p>${escapeHtml(data.mensaje || `No se encontraron registros para ${data.pais}.`)}</p>`;
+        return;
+    }
+
+    list.innerHTML = data.dinosaurios.map((dino) => `
+        <article class="map-dino-item">
+            <h5>${escapeHtml(dino.nombre || dino.nombre_cientifico || 'Dinosaurio')}</h5>
+            <div class="map-dino-meta">
+                ${dino.periodo ? `<span><i class="fas fa-clock"></i> ${escapeHtml(dino.periodo)}</span>` : ''}
+                ${dino.dieta ? `<span><i class="fas fa-drumstick-bite"></i> ${escapeHtml(dino.dieta)}</span>` : ''}
+            </div>
+            <p>${escapeHtml((dino.descripcion || '').substring(0, 180))}${(dino.descripcion || '').length > 180 ? '...' : ''}</p>
+        </article>
+    `).join('');
 }
 
 async function buscarDinosaurios(query) {
@@ -198,6 +341,7 @@ function renderDinosaurios(dinosaurios) {
                     ${dino.dieta ? `<span class="dino-badge"><i class="fas fa-drumstick-bite"></i> ${escapeHtml(dino.dieta)}</span>` : ''}
                     ${dino.periodo ? `<span class="dino-badge"><i class="fas fa-clock"></i> ${escapeHtml(dino.periodo)}</span>` : ''}
                 </div>
+                ${renderLocationSummary(dino.ubicaciones)}
                 <p class="dino-description">${escapeHtml((dino.descripcion || '').substring(0, 120))}${(dino.descripcion || '').length > 120 ? '...' : ''}</p>
                 <div class="dino-footer">
                     <button class="favorite-btn ${favorites.includes(dino.id) ? 'active' : ''}" 
@@ -280,6 +424,16 @@ async function verDetalle(id) {
                 </div>
             `;
         }
+
+        if (dino.ubicaciones && dino.ubicaciones.length > 0) {
+            detailsHtml += `
+                <div class="modal-detail-item">
+                    <i class="fas fa-earth-americas"></i>
+                    <strong>Dónde estuvo:</strong>
+                    <span>${dino.ubicaciones.map((ubicacion) => escapeHtml(ubicacion.pais)).join(', ')}</span>
+                </div>
+            `;
+        }
         
         document.getElementById('modalDetails').innerHTML = detailsHtml;
         
@@ -300,7 +454,16 @@ async function verDetalle(id) {
             `;
         }
         
-        document.getElementById('modalSources').innerHTML = curiosidadesHtml;
+        const ubicacionesHtml = dino.ubicaciones && dino.ubicaciones.length > 0
+            ? `
+                <h4 style="margin-top: 1rem; color: #2D4A22;"><i class="fas fa-map-marker-alt"></i> Registros geográficos</h4>
+                <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                    ${dino.ubicaciones.map((ubicacion) => `<li style="margin-bottom: 0.5rem;">${escapeHtml(ubicacion.pais)}${ubicacion.continente ? ` (${escapeHtml(ubicacion.continente)})` : ''}</li>`).join('')}
+                </ul>
+            `
+            : '';
+
+        document.getElementById('modalSources').innerHTML = ubicacionesHtml + curiosidadesHtml;
         
         // Imagen
         const modalImage = document.getElementById('modalImage');
@@ -427,4 +590,21 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function renderLocationSummary(ubicaciones) {
+    if (!ubicaciones || ubicaciones.length === 0) {
+        return '';
+    }
+
+    const visibles = ubicaciones.slice(0, 3).map((ubicacion) =>
+        `<span class="location-chip"><i class="fas fa-location-dot"></i> ${escapeHtml(ubicacion.pais)}</span>`
+    ).join('');
+
+    return `
+        <div class="location-summary">
+            <strong>Dónde estuvo</strong>
+            <div class="location-chips">${visibles}</div>
+        </div>
+    `;
 }

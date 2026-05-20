@@ -1,5 +1,6 @@
 from typing import Dict
 import os
+import unicodedata
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,6 +35,10 @@ class Settings:
         "alemania": "DE",
         "españa": "ES",
         "italia": "IT",
+        "japon": "JP",
+        "india": "IN",
+        "niger": "NE",
+        "portugal": "PT",
         "mexico": "MX",
         "peru": "PE",
         "chile": "CL",
@@ -42,7 +47,42 @@ class Settings:
         "venezuela": "VE",
         "bolivia": "BO",
         "paraguay": "PY",
-        "ecuador": "EC"
+        "ecuador": "EC",
+        "marruecos": "MA",
+        "tanzania": "TZ"
+    }
+
+    PAISES_LABELS: Dict[str, str] = {
+        "argentina": "Argentina",
+        "usa": "Estados Unidos",
+        "estados unidos": "Estados Unidos",
+        "china": "China",
+        "mongolia": "Mongolia",
+        "canada": "Canadá",
+        "brasil": "Brasil",
+        "australia": "Australia",
+        "sudafrica": "Sudáfrica",
+        "egipto": "Egipto",
+        "reino unido": "Reino Unido",
+        "francia": "Francia",
+        "alemania": "Alemania",
+        "españa": "España",
+        "italia": "Italia",
+        "japon": "Japón",
+        "india": "India",
+        "niger": "Níger",
+        "portugal": "Portugal",
+        "mexico": "México",
+        "peru": "Perú",
+        "chile": "Chile",
+        "colombia": "Colombia",
+        "uruguay": "Uruguay",
+        "venezuela": "Venezuela",
+        "bolivia": "Bolivia",
+        "paraguay": "Paraguay",
+        "ecuador": "Ecuador",
+        "marruecos": "Marruecos",
+        "tanzania": "Tanzania"
     }
     
     # Coordenadas para el mapa mundial
@@ -60,6 +100,11 @@ class Settings:
         "francia": {"lat": 46.2276, "lng": 2.2137, "continente": "Europa"},
         "alemania": {"lat": 51.1657, "lng": 10.4515, "continente": "Europa"},
         "españa": {"lat": 40.4637, "lng": -3.7492, "continente": "Europa"},
+        "italia": {"lat": 41.8719, "lng": 12.5674, "continente": "Europa"},
+        "japon": {"lat": 36.2048, "lng": 138.2529, "continente": "Asia"},
+        "india": {"lat": 20.5937, "lng": 78.9629, "continente": "Asia"},
+        "niger": {"lat": 17.6078, "lng": 8.0817, "continente": "África"},
+        "portugal": {"lat": 39.3999, "lng": -8.2245, "continente": "Europa"},
         "mexico": {"lat": 23.6345, "lng": -102.5528, "continente": "América del Norte"},
         "peru": {"lat": -9.1900, "lng": -75.0152, "continente": "Sudamérica"},
         "chile": {"lat": -35.6751, "lng": -71.5430, "continente": "Sudamérica"},
@@ -68,7 +113,115 @@ class Settings:
         "venezuela": {"lat": 6.4238, "lng": -66.5897, "continente": "Sudamérica"},
         "bolivia": {"lat": -16.2902, "lng": -63.5887, "continente": "Sudamérica"},
         "paraguay": {"lat": -23.4425, "lng": -58.4438, "continente": "Sudamérica"},
-        "ecuador": {"lat": -1.8312, "lng": -78.1834, "continente": "Sudamérica"}
+        "ecuador": {"lat": -1.8312, "lng": -78.1834, "continente": "Sudamérica"},
+        "marruecos": {"lat": 31.7917, "lng": -7.0926, "continente": "África"},
+        "tanzania": {"lat": -6.3690, "lng": 34.8888, "continente": "África"}
     }
+
+    DINOSAURIO_UBICACIONES_CONOCIDAS: Dict[str, list] = {
+        "tiranosaurio rex": ["usa", "canada"],
+        "tyrannosaurus rex": ["usa", "canada"],
+        "triceratops": ["usa", "canada"],
+        "triceratops horridus": ["usa", "canada"],
+        "velociraptor": ["mongolia", "china"],
+        "velociraptor mongoliensis": ["mongolia", "china"],
+        "brachiosaurio": ["usa", "tanzania"],
+        "brachiosaurus altithorax": ["usa", "tanzania"],
+        "estegosaurio": ["usa", "portugal"],
+        "stegosaurus stenops": ["usa", "portugal"],
+        "espinosaurio": ["egipto", "marruecos"],
+        "spinosaurus aegyptiacus": ["egipto", "marruecos"],
+        "diplodocus": ["usa"],
+        "diplodocus carnegii": ["usa"],
+        "anquilosaurio": ["usa", "canada"],
+        "ankylosaurus magniventris": ["usa", "canada"],
+        "parasaurolofo": ["usa", "canada"],
+        "parasaurolophus walkeri": ["usa", "canada"],
+        "carnotaurus": ["argentina"],
+        "carnotaurus sastrei": ["argentina"],
+        "giganotosaurus": ["argentina"],
+        "giganotosaurus carolinii": ["argentina"],
+        "argentinosaurus": ["argentina"],
+        "argentinosaurus huinculensis": ["argentina"],
+        "microraptor": ["china"],
+        "microraptor zhaoianus": ["china"],
+        "iguanodon": ["reino unido", "alemania"],
+        "iguanodon bernissartensis": ["reino unido", "alemania"],
+        "plateosaurus": ["alemania"],
+        "plateosaurus engelhardti": ["alemania"],
+        "dilophosaurus": ["usa"],
+        "dilophosaurus wetherilli": ["usa"],
+        "protoceratops": ["mongolia"],
+        "protoceratops andrewsi": ["mongolia"],
+        "concavenator": ["españa"],
+        "concavenator corcovatus": ["españa"],
+        "amargasaurus": ["argentina"],
+        "amargasaurus cazaui": ["argentina"],
+        "leaellynasaura": ["australia"],
+        "leaellynasaura amicagraphica": ["australia"],
+        "oxalaia": ["brasil"],
+        "oxalaia quilombensis": ["brasil"],
+        "arcovenator": ["francia"],
+        "arcovenator escotae": ["francia"],
+        "labocania": ["mexico"],
+        "labocania anomala": ["mexico"]
+    }
+
+    _COUNTRY_ALIASES: Dict[str, str] = {
+        "estados unidos": "usa",
+        "eeuu": "usa",
+        "united states": "usa",
+        "united states of america": "usa",
+        "u s a": "usa",
+        "sudafrica": "sudafrica",
+        "sudáfrica": "sudafrica",
+        "mexico": "mexico",
+        "méxico": "mexico",
+        "canada": "canada",
+        "canadá": "canada",
+        "peru": "peru",
+        "perú": "peru",
+        "japon": "japon",
+        "japón": "japon",
+        "niger": "niger",
+        "níger": "niger",
+        "espana": "españa",
+        "españa": "españa",
+    }
+
+    @staticmethod
+    def _strip_accents(value: str) -> str:
+        normalized = unicodedata.normalize("NFKD", value or "")
+        return "".join(char for char in normalized if not unicodedata.combining(char))
+
+    def normalize_country_key(self, value: str) -> str:
+        raw = " ".join((value or "").strip().lower().split())
+        if not raw:
+            return ""
+
+        alias = self._COUNTRY_ALIASES.get(raw)
+        if alias:
+            return alias
+
+        stripped = self._strip_accents(raw)
+        alias = self._COUNTRY_ALIASES.get(stripped)
+        if alias:
+            return alias
+
+        for key in self.PAISES_API.keys():
+            if raw == key or stripped == self._strip_accents(key):
+                return key
+
+        for key in self.PAISES_COORDENADAS.keys():
+            if raw == key or stripped == self._strip_accents(key):
+                return key
+
+        return stripped
+
+    def get_country_label(self, value: str) -> str:
+        key = self.normalize_country_key(value)
+        if not key:
+            return ""
+        return self.PAISES_LABELS.get(key, key.capitalize())
 
 settings = Settings()

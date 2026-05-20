@@ -15,6 +15,7 @@
 
     <!-- Estilos -->
     <link rel="stylesheet" href="/static/css/stylee.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
     <!-- Iconos -->
     <link rel="icon" type="image/png" href="/static/img/favicon/favicon-96x96.png" sizes="96x96" />
@@ -64,6 +65,31 @@
             <h2><i class="fas fa-volcano"></i> ¡Explora sobre los dinosaurios!</h2>
             <p>Encuentra información fascinante sobre tus dinosaurios favoritos</p>
         </div>
+
+        <section class="world-section">
+            <div class="world-section-copy">
+                <span class="world-kicker">Mapa mundial</span>
+                <h3>Ve el mundo y descubre dónde estuvieron los dinosaurios</h3>
+                <p>Selecciona un país o toca un punto del mapa para consultar los dinosaurios registrados en esa región.</p>
+            </div>
+            <div class="world-tools">
+                <label for="countrySelect">País</label>
+                <select id="countrySelect" class="country-select">
+                    <option value="">Explora el mapa mundial</option>
+                </select>
+                <p id="mapCountryStatus" class="map-country-status">El mapa muestra países con registros disponibles o ubicaciones conocidas.</p>
+            </div>
+            <div id="worldMap" class="world-map" aria-label="Mapa mundial de dinosaurios"></div>
+            <div class="world-results">
+                <div class="world-results-header">
+                    <h4>Dinosaurios por región</h4>
+                    <span id="mapSourceBadge" class="map-source-badge">Sin selección</span>
+                </div>
+                <div id="mapDinosaurList" class="map-dinosaur-list">
+                    <p>Elige un país para ver qué dinosaurios estuvieron allí.</p>
+                </div>
+            </div>
+        </section>
 
         <!-- Buscador -->
         <div class="search-container">
@@ -134,6 +160,7 @@
     </footer>
 
     <script src="/static/js/menu-usuario.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/static/js/dinosaurio.js"></script>
 </body>
 
