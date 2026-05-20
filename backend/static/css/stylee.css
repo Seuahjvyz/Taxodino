@@ -1,0 +1,894 @@
+/* ============================================
+   RESET
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* IMPORTANTE: Asegurar que html y body ocupen toda la altura */
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #F4E9D8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+    padding-top: 80px;
+}
+
+/* ============================================
+   CURSORES PERSONALIZADOS - TEMÁTICA DINOSAURIO
+   ============================================ */
+
+/* 1. CURSOR NORMAL (Default) - Huevo de dinosaurio */
+body,
+html {
+    cursor: url('/static/img/huevo-de-dinosaurio-mouse.png') 16 16, auto;
+}
+
+/* 2. CURSOR TEXTO (Input) - Pluma */
+input,
+textarea,
+select,
+[contenteditable="true"] {
+    cursor: url('/static/img/pluma-mouse.png') 8 8, text;
+}
+
+/* 3. CURSOR ENLACES Y BOTONES - Huellita */
+a,
+.nav-link,
+.link,
+button,
+.btn,
+.register-btn,
+.user-menu-trigger,
+#userMenu,
+.user-menu,
+.login-link a,
+.navbar-brand,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.user-dropdown a {
+    cursor: url('/static/img/huellita.png') 16 16, pointer;
+}
+
+/* 4. CURSOR CARGA (Loading/Wait) - Huevos-mouse */
+.loading,
+.waiting,
+[data-loading="true"] {
+    cursor: url('/static/img/huevos-mouse.gif') 16 16, wait;
+}
+
+/* 5. CURSOR NO PERMITIDO (Not allowed) - Opción con lo que tengas */
+.disabled,
+[disabled],
+.btn:disabled,
+input:disabled {
+    cursor: url('/static/img/huesos.png') 16 16, not-allowed;
+}
+
+/* 6. CURSOR AYUDA (Help) - Podrías usar pluma o fosil */
+.help,
+[data-help] {
+    cursor: url('/static/img/pluma-mouse.png') 16 16, help;
+}
+
+/* ============================================
+   NAVBAR (BARRA SUPERIOR - VERDE OSCURO)
+   ============================================ */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(45, 74, 34, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    padding: 0.8rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid #F39C12;
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Logo / Marca */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+/* Estilo para la imagen del logo en la barra superior */
+.navbar-brand img {
+    width: 40px;
+    height: auto;
+    transition: filter 0.3s ease;
+}
+
+.navbar-brand h1 {
+    font-size: 1.6rem;
+    margin: 0;
+    color: #F4E9D8;
+    text-shadow: none;
+    letter-spacing: 1px;
+}
+
+/* Enlaces de navegación */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #F4E9D8;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.nav-link i {
+    font-size: 1.1rem;
+    color: #F4E9D8;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    background: rgba(243, 156, 18, 0.2);
+    color: #F39C12;
+    transform: translateY(-2px);
+}
+
+.nav-link:hover i {
+    color: #F39C12;
+}
+
+/* Menú de usuario */
+.user-menu {
+    position: relative;
+}
+
+.user-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-menu-trigger:hover {
+    background: rgba(243, 156, 18, 0.25);
+    transform: translateY(-2px);
+    border-color: rgba(243, 156, 18, 0.5);
+}
+
+.user-menu-trigger i:first-child {
+    font-size: 1.3rem;
+    color: #F4E9D8;
+}
+
+.user-menu-trigger span {
+    color: #F4E9D8;
+    font-weight: 500;
+}
+
+.user-menu-trigger i:last-child {
+    font-size: 0.8rem;
+    color: #F4E9D8;
+}
+
+/* Dropdown del usuario - fondo más oscuro para contraste */
+.user-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: #2D4A22;
+    border-radius: 16px;
+    min-width: 200px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 101;
+    border: 1px solid #F39C12;
+}
+
+.user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #F4E9D8;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.user-dropdown a i {
+    width: 20px;
+    color: #ffffff;
+}
+
+.user-dropdown a:hover {
+    background: #3A5C2E;
+    color: #F39C12;
+}
+
+.user-dropdown a:hover i {
+    color: #F39C12;
+}
+
+.user-dropdown hr {
+    margin: 0;
+    border: none;
+    height: 1px;
+    background: #F39C12;
+    opacity: 0.3;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+/* Contenedor que empuja el footer hacia abajo */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+
+/* ============================================
+   ESTILOS ESPECÍFICOS - PÁGINA PRINCIPAL
+   ============================================ */
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+}
+
+.hero-section h2 {
+    color: #2D4A22;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero-section p {
+    color: #8B5A2B;
+    font-size: 1rem;
+}
+
+/* Buscador */
+.search-container {
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    position: relative;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    background: white;
+    border-radius: 60px;
+    padding: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #E8D5A3;
+    transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+    border-color: #E67E22;
+    box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    padding: 15px 20px;
+    font-size: 1rem;
+    width: 500px;
+    background: transparent;
+}
+
+.search-input:focus {
+    outline: none;
+    transform: none;
+    box-shadow: none;
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #E67E22, #F39C12);
+    border: none;
+    padding: 0 25px;
+    border-radius: 60px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-btn img {
+    width: 20px;
+    height: auto;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #F39C12, #E67E22);
+}
+
+/* Filtros rápidos */
+.filters-section {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid #E8D5A3;
+    padding: 8px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #5D4037;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-btn i {
+    font-size: 1rem;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: linear-gradient(135deg, #E67E22, #F39C12);
+    border-color: #E67E22;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.filter-btn:hover i,
+.filter-btn.active i {
+    color: white;
+}
+
+/* Grid de tarjetas */
+.dinosaurs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+/* Tarjeta de dinosaurio */
+.dino-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    border: 1px solid #E8D5A3;
+}
+
+.dino-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #E67E22;
+}
+
+.dino-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    background: #F5D78C;
+}
+
+.dino-info {
+    padding: 1.5rem;
+}
+
+.dino-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2D4A22;
+    margin-bottom: 0.25rem;
+}
+
+.dino-scientific {
+    font-size: 0.85rem;
+    color: #E67E22;
+    font-style: italic;
+    margin-bottom: 0.75rem;
+}
+
+.dino-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.dino-badge {
+    background: #F4E9D8;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #5D4037;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dino-badge i {
+    color: #E67E22;
+    font-size: 0.7rem;
+}
+
+.dino-description {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.dino-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #E8D5A3;
+}
+
+.favorite-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #ccc;
+    transition: all 0.3s ease;
+    padding: 5px;
+}
+
+.favorite-btn:hover,
+.favorite-btn.active {
+    color: #E74C3C;
+    transform: scale(1.1);
+}
+
+.dino-link {
+    color: #E67E22;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dino-link:hover {
+    color: #F39C12;
+}
+
+/* Mensaje sin resultados */
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 24px;
+    color: #8B5A2B;
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #E8D5A3;
+}
+
+.no-results h3 {
+    margin-bottom: 0.5rem;
+}
+
+/* Contador de resultados */
+.results-count {
+    text-align: right;
+    color: #8B5A2B;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+/* Modal para detalles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 32px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: sticky;
+    top: 10px;
+    right: 10px;
+    float: right;
+    background: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #E67E22;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-close:hover {
+    background: #E67E22;
+    color: white;
+}
+
+.modal-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    clear: both;
+}
+
+.modal-body h2 {
+    color: #2D4A22;
+    margin-bottom: 0.25rem;
+}
+
+.modal-body h3 {
+    color: #E67E22;
+    font-size: 1rem;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.modal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 1rem 0;
+}
+
+.modal-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #E8D5A3;
+}
+
+.modal-detail-item i {
+    width: 30px;
+    color: #E67E22;
+    font-size: 1.1rem;
+}
+
+.modal-detail-item strong {
+    color: #2D4A22;
+    min-width: 100px;
+}
+
+.modal-sources {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #E8D5A3;
+    font-size: 0.8rem;
+}
+
+.modal-sources a {
+    color: #E67E22;
+    text-decoration: none;
+}
+
+.modal-sources a:hover {
+    text-decoration: underline;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 3rem;
+}
+
+.loading-spinner i {
+    font-size: 2rem;
+    color: #E67E22;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Ajustes responsive */
+@media (max-width: 768px) {
+    .dinosaurs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-box {
+        flex-direction: column;
+        background: transparent;
+        box-shadow: none;
+        gap: 10px;
+    }
+
+    .search-input {
+        background: white;
+        border-radius: 60px;
+        border: 2px solid #E8D5A3;
+    }
+
+    .search-btn {
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .filters-section {
+        gap: 10px;
+    }
+
+    .filter-btn {
+        font-size: 0.8rem;
+        padding: 6px 15px;
+    }
+
+    .hero-section h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dino-name {
+        font-size: 1.2rem;
+    }
+
+    .dino-info {
+        padding: 1rem;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .modal-detail-item {
+        flex-wrap: wrap;
+    }
+
+    .modal-detail-item strong {
+        min-width: 80px;
+    }
+}
+
+
+
+/* ============================================
+   FOOTER (VERDE OSCURO)
+   ============================================ */
+footer {
+    background: rgba(45, 74, 34, 0.95);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    padding: 0.8rem 2rem;
+    text-align: center;
+    border-top: 2px solid #F39C12;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    margin-top: 30px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-content p {
+    color: #F4E9D8;
+    font-size: 0.8rem;
+}
+
+.footer-content a {
+    color: #F39C12;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+    color: #E67E22;
+    text-decoration: underline;
+}
+
+.footer-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-icons i {
+    color: #F4E9D8;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.footer-icons i:hover {
+    transform: translateY(-3px);
+    color: #F39C12;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.6rem 1rem;
+    }
+
+    .navbar-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-links {
+        gap: 0.8rem;
+    }
+
+    .nav-link {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+
+    .user-menu-trigger {
+        padding: 6px 12px;
+    }
+
+    body {
+        padding-top: 110px;
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    footer {
+        padding: 0.6rem 1rem;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .nav-link span {
+        display: none;
+    }
+
+    .nav-link i {
+        font-size: 1.3rem;
+    }
+
+    .user-menu-trigger span {
+        display: none;
+    }
+
+    body {
+        padding-top: 100px;
+    }
+}

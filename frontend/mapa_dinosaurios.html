@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Mundial de Dinosaurios - Taxodino</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .dinosaur-info {
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .dinosaur-card {
+            border-left: 4px solid #ff6b35;
+            margin-bottom: 10px;
+            padding: 10px;
+            transition: transform 0.3s;
+        }
+        .dinosaur-card:hover {
+            transform: translateX(5px);
+            background: #f0f0f0;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .country-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 300px;
+        }
+        .dino-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Mapa Mundial de Dinosaurios</h1>
+            <p>Descubre qué dinosaurios habitaron cada región del planeta</p>
+        </header>
+
+        <div class="country-selector">
+            <label for="pais">Selecciona un país:</label>
+            <select id="pais" onchange="cargarDinosaurios()">
+                <option value="">-- Elige un país --</option>
+            </select>
+        </div>
+
+        <div id="map"></div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Cargando dinosaurios...</p>
+        </div>
+
+        <div id="dinosaur-info" class="dinosaur-info">
+            <h3>🦕 Dinosaurios encontrados</h3>
+            <div id="dinosaur-list">
+                <p>Selecciona un país en el mapa o en la lista para ver los dinosaurios que habitaron allí.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let currentMarker = null;
+        
+        // Inicializar mapa
+        function initMap() {
+            map = L.map('map').setView([20, 0], 2);
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; CartoDB',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Cargar lista de países
+            cargarPaises();
+        }
+        
+        // Cargar lista de países
+        async function cargarPaises() {
+            try {
+                const response = await fetch('/api/v1/geografia/paises');
+                const paises = await response.json();
+                
+                const select = document.getElementById('pais');
+                paises.forEach(pais => {
+                    const option = document.createElement('option');
+                    option.value = pais.toLowerCase();
+                    option.textContent = pais;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error cargando países:', error);
+            }
+        }
+        
+        // Cargar dinosaurios por país
+        async function cargarDinosaurios() {
+            const pais = document.getElementById('pais').value;
+            if (!pais) return;
+            
+            const loading = document.getElementById('loading');
+            const dinosaurList = document.getElementById('dinosaur-list');
+            
+            loading.style.display = 'block';
+            dinosaurList.innerHTML = '<p>Cargando...</p>';
+            
+            try {
+                const response = await fetch(`/api/v1/geografia/dinosaurios/${pais}`);
+                const data = await response.json();
+                
+                // Actualizar mapa
+                if (currentMarker) {
+                    map.removeLayer(currentMarker);
+                }
+                
+                const coords = data.coordenadas;
+                currentMarker = L.marker([coords.lat, coords.lng]).addTo(map)
+                    .bindPopup(`<b>${data.pais}</b><br>${data.dinosaurios.length} dinosaurios encontrados`)
+                    .openPopup();
+                
+                map.setView([coords.lat, coords.lng], 5);
+                
+                // Mostrar dinosaurios
+                mostrarDinosaurios(data.dinosaurios, data.pais);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                dinosaurList.innerHTML = '<p class="error">Error al cargar los dinosaurios. Intenta de nuevo.</p>';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+        
+        // Mostrar lista de dinosaurios
+        function mostrarDinosaurios(dinosaurios, pais) {
+            const container = document.getElementById('dinosaur-list');
+            
+            if (!dinosaurios || dinosaurios.length === 0) {
+                container.innerHTML = `<p>No se encontraron registros de dinosaurios en ${pais}.</p>`;
+                return;
+            }
+            
+            let html = `<h4>🦕 ${dinosaurios.length} dinosaurio(s) encontrado(s) en ${pais}:</h4>`;
+            
+            dinosaurios.forEach(dino => {
+                html += `
+                    <div class="dinosaur-card">
+                        <strong>🦖 ${dino.nombre || dino.nombre_cientifico}</strong><br>
+                        ${dino.nombre_cientifico ? `<em>${dino.nombre_cientifico}</em><br>` : ''}
+                        ${dino.periodo ? `📅 Período: ${dino.periodo}<br>` : ''}
+                        ${dino.dieta ? `🍽️ Dieta: ${dino.dieta}<br>` : ''}
+                        ${dino.descripcion ? `<small>${dino.descripcion.substring(0, 150)}...</small>` : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Inicializar cuando la página cargue
+        window.addEventListener('load', initMap);
+    </script>
+</body>
+</html>

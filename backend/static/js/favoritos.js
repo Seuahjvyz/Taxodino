@@ -1,5 +1,5 @@
 // Configuración
-const API_BASE_URL = 'https://taxodino.onrender.com/api/v1';
+const API_BASE_URL = '/api/v1';
 
 // Cargar favoritos al iniciar
 document.addEventListener('DOMContentLoaded', function() {

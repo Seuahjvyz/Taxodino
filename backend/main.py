@@ -10,6 +10,14 @@ from app.api.v1.endpoints import auth
 # Cargar variables de entorno
 load_dotenv()
 
+NEON_DATABASE_URL = os.getenv("NEON_DATABASE_URL", "")
+API_SECRET_KEY = os.getenv("API_SECRET_KEY", "")
+
+if not NEON_DATABASE_URL:
+    print("⚠️ Asegúrate de tener configurado NEON_DATABASE_URL en .env")
+if not API_SECRET_KEY:
+    print("⚠️ Asegúrate de tener configurado API_SECRET_KEY en .env")
+
 # Importar rutas de API existentes
 from app.api.v1.endpoints import dinosaurios
 
@@ -34,7 +42,7 @@ try:
     print("✅ Tablas creadas/verificadas exitosamente")
 except Exception as e:
     print(f"⚠️ Error conectando a la base de datos: {e}")
-    print("💡 Asegúrate de tener configurado el archivo .env con DATABASE_URL")
+    print("💡 Asegúrate de tener configurado el archivo .env con NEON_DATABASE_URL")
 
 # Inicializar FastAPI
 app = FastAPI(
@@ -46,7 +54,7 @@ app = FastAPI(
 # Configuración CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://taxodino.onrender.com", "*"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -184,7 +192,7 @@ if __name__ == "__main__":
     print("="*50)
     print(f"📁 Archivos estáticos: {'✅' if static_path.exists() else '❌'}")
     print(f"📁 Templates: {'✅' if templates_path.exists() else '❌'}")
-    print(f"🗄️  Base de datos: {'🌩️ Neon PostgreSQL' if 'neon.tech' in os.getenv('DATABASE_URL', '') else 'SQLite/local'}")
+    print(f"🗄️  Base de datos: {'🌩️ Neon PostgreSQL' if 'neon.tech' in NEON_DATABASE_URL else 'SQLite/local'}")
     print(f"🌍 Mapa mundial: ✅ Activado")
     print(f"⭐ Favoritos: {'✅ Activado' if HAS_FAVORITOS else '❌ No disponible'}")
     print("\n📌 Endpoints disponibles:")
